@@ -14,8 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchVideoData = void 0;
 const axios_1 = __importDefault(require("axios"));
+const apiKeys_1 = require("../data/apiKeys");
 function fetchVideoData(link) {
     return __awaiter(this, void 0, void 0, function* () {
+        const index = Math.floor(Math.random() * apiKeys_1.apiKeys.length);
+        const key = apiKeys_1.apiKeys[index];
         const options = {
             method: "GET",
             url: "https://instagram-media-downloader.p.rapidapi.com/rapid/post.php",
@@ -23,7 +26,7 @@ function fetchVideoData(link) {
                 url: link,
             },
             headers: {
-                "X-RapidAPI-Key": "12e439896dmsh578be7c646e4746p13f763jsn0d9db4287af7",
+                "X-RapidAPI-Key": key,
                 "X-RapidAPI-Host": "instagram-media-downloader.p.rapidapi.com",
             },
             responseType: "json",

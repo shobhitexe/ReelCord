@@ -11,13 +11,20 @@ export async function messageHandler(msg: Message): Promise<void> {
     const link = await fetchVideoData(msg.content);
     const response = await axios.get(link, { responseType: "stream" });
 
-    msg.reply({
-      files: [
-        {
-          attachment: response.data,
-          name: "linkPreviewBot.mp4",
-        },
-      ],
-    });
+    msg
+      .reply({
+        files: [
+          {
+            attachment: response.data,
+            name: "linkPreviewBot.mp4",
+          },
+        ],
+      })
+      .then(() => {
+        console.log("Preview sent");
+      })
+      .catch((err) => {
+        console.log({ error: err });
+      });
   }
 }

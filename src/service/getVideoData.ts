@@ -1,6 +1,10 @@
 import axios, { AxiosRequestConfig } from "axios";
+import { apiKeys } from "../data/apiKeys";
 
 export async function fetchVideoData(link: string): Promise<string> {
+  const index = Math.floor(Math.random() * apiKeys.length);
+  const key = apiKeys[index];
+
   const options: AxiosRequestConfig = {
     method: "GET",
     url: "https://instagram-media-downloader.p.rapidapi.com/rapid/post.php",
@@ -8,7 +12,7 @@ export async function fetchVideoData(link: string): Promise<string> {
       url: link,
     },
     headers: {
-      "X-RapidAPI-Key": "12e439896dmsh578be7c646e4746p13f763jsn0d9db4287af7",
+      "X-RapidAPI-Key": key,
       "X-RapidAPI-Host": "instagram-media-downloader.p.rapidapi.com",
     },
     responseType: "json",

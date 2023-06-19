@@ -25,13 +25,20 @@ function messageHandler(msg) {
         if ((0, linkValidation_1.isInstagramPostLink)(msg.content)) {
             const link = yield (0, getVideoData_1.fetchVideoData)(msg.content);
             const response = yield axios_1.default.get(link, { responseType: "stream" });
-            msg.reply({
+            msg
+                .reply({
                 files: [
                     {
                         attachment: response.data,
                         name: "linkPreviewBot.mp4",
                     },
                 ],
+            })
+                .then(() => {
+                console.log("Preview sent");
+            })
+                .catch((err) => {
+                console.log({ error: err });
             });
         }
     });
