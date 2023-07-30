@@ -13,6 +13,7 @@ export async function messageHandler(msg: Message): Promise<void> {
 
     msg
       .reply({
+        content: `Shared by ${msg.author}`,
         files: [
           {
             attachment: response.data,
