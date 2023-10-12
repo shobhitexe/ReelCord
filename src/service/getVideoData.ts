@@ -22,7 +22,6 @@ export async function fetchVideoData(link: string): Promise<string> {
 
     return response.data.video;
   } catch (error) {
-    console.error("An error occurred:", error);
     throw error;
   }
 }
