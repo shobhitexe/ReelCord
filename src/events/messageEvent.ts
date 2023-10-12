@@ -34,7 +34,7 @@ export async function messageHandler(msg: Message): Promise<void> {
     } catch (error) {
       await msg.reply({
         content:
-          "Unable to provide a preview because currently testing some experimental features",
+          "Unable to generate a preview coz currently testing some experimental features",
       });
       console.error(error);
     }
