@@ -7,25 +7,36 @@ export async function messageHandler(msg: Message): Promise<void> {
   if (msg.author.bot) return;
   if (msg.attachments.size > 0) return;
 
+  const { author } = msg;
+
   if (isInstagramPostLink(msg.content)) {
     const link = await fetchVideoData(msg.content);
-    const response = await axios.get(link, { responseType: "stream" });
 
-    msg
-      .reply({
-        content: `Shared by ${msg.author}`,
+    console.log(link);
+
+    try {
+      const response = await axios.get(link, { responseType: "stream" });
+
+      if (!author) {
+        console.log("Can't send preview without author");
+        return;
+      }
+
+      await msg.reply({
+        content: `Shared by ${author}`,
         files: [
           {
             attachment: response.data,
             name: "linkPreviewBot.mp4",
           },
         ],
-      })
-      .then(() => {
-        console.log("Preview sent");
-      })
-      .catch((err) => {
-        console.log({ error: err });
       });
+    } catch (error) {
+      await msg.reply({
+        content:
+          "Unable to provide a preview because currently testing some experimental features",
+      });
+      console.error(error);
+    }
   }
 }
