@@ -1,7 +1,6 @@
 import { Message } from "discord.js";
 import { fetchVideoData } from "../service/getVideoData";
 import { isInstagramPostLink } from "../utils/linkValidation";
-import axios from "axios";
 
 export async function messageHandler(msg: Message): Promise<void> {
   if (msg.author.bot) return;
@@ -10,12 +9,8 @@ export async function messageHandler(msg: Message): Promise<void> {
   const { author } = msg;
 
   if (isInstagramPostLink(msg.content)) {
-    const link = await fetchVideoData(msg.content);
-
-    console.log(link);
-
     try {
-      const response = await axios.get(link, { responseType: "stream" });
+      const res = await fetchVideoData(msg.content);
 
       if (!author) {
         console.log("Can't send preview without author");
@@ -26,15 +21,14 @@ export async function messageHandler(msg: Message): Promise<void> {
         content: `Shared by ${author}`,
         files: [
           {
-            attachment: response.data,
+            attachment: res,
             name: "linkPreviewBot.mp4",
           },
         ],
       });
     } catch (error) {
       await msg.reply({
-        content:
-          "Unable to provide a preview because currently testing some experimental features",
+        content: "<:drip:962326303703433216>",
       });
       console.error(error);
     }
