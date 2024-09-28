@@ -17,7 +17,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "tsc",
-    "run": "node ./dist/index.js",
+    "start": "node ./dist/index.js",
     "dev": "tsc && nodemon ./dist/index.js"
   },
   "keywords": [],
