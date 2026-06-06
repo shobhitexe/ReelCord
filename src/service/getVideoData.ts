@@ -1,27 +1,13 @@
-import axios, { AxiosRequestConfig } from "axios";
-import { apiKeys } from "../data/apikeys";
+import { instagramGetUrl } from "instagram-url-direct";
 
 export async function fetchVideoData(link: string): Promise<string> {
-  const index = Math.floor(Math.random() * apiKeys.length);
-  const key = apiKeys[index];
-
-  const options: AxiosRequestConfig = {
-    method: "GET",
-    url: "https://instagram-media-downloader.p.rapidapi.com/rapid/post.php",
-    params: {
-      url: link,
-    },
-    headers: {
-      "X-RapidAPI-Key": key,
-      "X-RapidAPI-Host": "instagram-media-downloader.p.rapidapi.com",
-    },
-    responseType: "json",
-  };
-
   try {
-    const response = await axios(options);
+    console.log(`Fetching video data for link: ${link}`);
 
-    return response.data.video;
+    const result = await instagramGetUrl(link);
+    const videoUrl = result.url_list?.[0];
+    if (!videoUrl) throw new Error("No video URL found");
+    return videoUrl;
   } catch (error) {
     throw error;
   }
