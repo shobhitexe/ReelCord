@@ -16,7 +16,7 @@ const client = new Client({
   ],
 });
 
-client.once("ready", handleReadyEvent(client));
+client.once("clientReady", handleReadyEvent(client));
 client.on("messageCreate", messageHandler);
 
 server.listen(8080, () => {
