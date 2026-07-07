@@ -3,3 +3,4 @@ node_modules
 /src/service/old.ts
 /dist/data/apiKeys.js
 dist
+.DS_Store

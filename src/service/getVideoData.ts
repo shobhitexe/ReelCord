@@ -1,4 +1,4 @@
-import { instagramGetUrl } from "instagram-url-direct";
+import { instagramGetUrl } from "./instagram";
 
 export async function fetchVideoData(link: string): Promise<string> {
   try {
