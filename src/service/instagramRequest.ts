@@ -8,8 +8,6 @@ const UA =
 
 export async function getCSRFToken(): Promise<InstagramCookies> {
   try {
-    console.log("[instagramRequest] Fetching cookies from instagram.com...");
-
     const config: AxiosRequestConfig = {
       method: "GET",
       url: "https://www.instagram.com/",
@@ -29,17 +27,9 @@ export async function getCSRFToken(): Promise<InstagramCookies> {
 
     const cookieJar: InstagramCookies = { csrftoken: "" };
 
-    console.log("[instagramRequest] All set-cookie headers received:");
     for (const cookieStr of response.headers["set-cookie"]) {
       const cookieName = cookieStr.split(";")[0].split("=")[0].trim();
-      const cookieValue = cookieStr
-        .split(";")[0]
-        .split("=")
-        .slice(1)
-        .join("=")
-        .trim();
-
-      console.log(`  ${cookieName}=${cookieValue.substring(0, 20)}...`);
+      const cookieValue = cookieStr.split(";")[0].split("=").slice(1).join("=").trim();
 
       if (cookieName === "csrftoken") {
         cookieJar.csrftoken = cookieValue;
@@ -52,10 +42,6 @@ export async function getCSRFToken(): Promise<InstagramCookies> {
       console.error("[instagramRequest] csrftoken not found in cookies");
       throw new Error("CSRF token not found in response headers.");
     }
-
-    console.log(
-      `[instagramRequest] Extracted cookies — csrftoken: ${cookieJar.csrftoken.substring(0, 20)}..., ig_did: ${cookieJar.ig_did ? "yes" : "no"}, mid: ${cookieJar.mid ? "yes" : "no"}`
-    );
 
     return cookieJar;
   } catch (err: any) {
@@ -70,8 +56,6 @@ export async function instagramRequest(
   delay: number
 ): Promise<any> {
   try {
-    console.log(`[instagramRequest] Making GraphQL request for shortcode: ${shortcode}`);
-
     const cookies = await getCSRFToken();
 
     const cookieHeader = Object.entries(cookies)
@@ -80,7 +64,6 @@ export async function instagramRequest(
       .join("; ");
 
     const INSTAGRAM_DOCUMENT_ID = await getDocumentId(shortcode, cookieHeader, cookies.csrftoken);
-    console.log(`[instagramRequest] Using doc_id: ${INSTAGRAM_DOCUMENT_ID}`);
 
     const BASE_URL = "https://www.instagram.com/graphql/query";
 
@@ -93,8 +76,6 @@ export async function instagramRequest(
       }),
       doc_id: INSTAGRAM_DOCUMENT_ID,
     });
-
-    console.log(`[instagramRequest] Cookie header: ${cookieHeader.substring(0, 80)}...`);
 
     const config: AxiosRequestConfig = {
       method: "post",
@@ -115,39 +96,16 @@ export async function instagramRequest(
 
     const { data } = await axios.request(config);
 
-    console.log(`[instagramRequest] Response status: ${JSON.stringify(data.status || "none")}`);
-    console.log(`[instagramRequest] Response top-level keys: ${JSON.stringify(Object.keys(data))}`);
-
     if (data.errors) {
       console.error(`[instagramRequest] GraphQL errors: ${JSON.stringify(data.errors).substring(0, 500)}`);
     }
 
     if (!data.data?.xdt_shortcode_media) {
       console.error("[instagramRequest] xdt_shortcode_media is null/undefined");
-      console.log(`[instagramRequest] data.data type: ${typeof data.data}`);
-      console.log(
-        `[instagramRequest] data.data keys: ${
-          data.data ? JSON.stringify(Object.keys(data.data)) : "null"
-        }`
-      );
-
-      if (data.errors && data.errors.length > 0) {
-        const err = data.errors[0];
-        console.error(`[instagramRequest] Error message: ${err.message || JSON.stringify(err)}`);
-      }
-
       throw new Error(
         "Only posts/reels supported, check if your link is valid."
       );
     }
-
-    console.log("[instagramRequest] Successfully fetched media data");
-    console.log(
-      `[instagramRequest] __typename: ${data.data.xdt_shortcode_media.__typename}`
-    );
-    console.log(
-      `[instagramRequest] is_video: ${data.data.xdt_shortcode_media.is_video}`
-    );
 
     return data.data.xdt_shortcode_media;
   } catch (err: any) {

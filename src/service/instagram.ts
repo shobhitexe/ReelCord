@@ -9,11 +9,7 @@ export async function instagramGetUrl(
 ): Promise<InstagramResponse> {
   return new Promise<InstagramResponse>(async (resolve, reject) => {
     try {
-      console.log(`[instagram] Processing URL: ${url_media}`);
-
       const resolvedUrl = await checkRedirect(url_media);
-      console.log(`[instagram] Resolved URL: ${resolvedUrl}`);
-
       const shortcode = getShortcode(resolvedUrl);
 
       const requestData = await instagramRequest(
@@ -23,7 +19,6 @@ export async function instagramGetUrl(
       );
 
       const output = createOutputData(requestData);
-      console.log(`[instagram] Done — ${output.results_number} result(s)`);
 
       resolve(output as InstagramResponse);
     } catch (err: any) {

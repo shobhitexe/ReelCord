@@ -52,14 +52,11 @@ export function isSidecar(requestData: any): boolean {
 
 export function createOutputData(requestData: any) {
   try {
-    console.log("[instagramParser] Creating output data from request...");
-
     const url_list: string[] = [];
     const media_details: any[] = [];
     const IS_SIDECAR = isSidecar(requestData);
 
     if (IS_SIDECAR) {
-      console.log("[instagramParser] Post is a sidecar (multiple media items)");
       requestData.edge_sidecar_to_children.edges.forEach((media: any) => {
         media_details.push(formatMediaDetails(media.node));
         if (media.node.is_video) {
@@ -69,7 +66,6 @@ export function createOutputData(requestData: any) {
         }
       });
     } else {
-      console.log("[instagramParser] Post is a single media item");
       media_details.push(formatMediaDetails(requestData));
       if (requestData.is_video) {
         url_list.push(requestData.video_url as string);
@@ -77,8 +73,6 @@ export function createOutputData(requestData: any) {
         url_list.push(requestData.display_url as string);
       }
     }
-
-    console.log(`[instagramParser] Extracted ${url_list.length} URL(s)`);
 
     return {
       results_number: url_list.length,
